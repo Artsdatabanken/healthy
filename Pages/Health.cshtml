@@ -1,0 +1,25 @@
+﻿@page
+@model HealthModel
+@{
+    ViewData["Title"] = "Health Check";
+}
+
+<h2>Health Check</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Host</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var result in Model.SortedHealthResults)
+        {
+            <tr class="@(result.Value == "Healthy" ? "healthy" : "unhealthy")">
+                <td>@result.Key</td>
+                <td>@result.Value</td>
+            </tr>
+        }
+    </tbody>
+</table>
