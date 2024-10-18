@@ -6,6 +6,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<HealthCheckService>();
 builder.Services.AddMemoryCache();
+builder.Services.AddHostedService<HealthCheckBackgroundService>();
 
 var app = builder.Build();
 

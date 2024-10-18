@@ -1,26 +1,29 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Caching.Memory;
+
 public class HealthModel : PageModel
 {
-    private readonly HealthCheckService _healthCheckService;
-    private readonly IConfiguration _configuration;
+    private readonly IMemoryCache _cache;
 
-    public HealthModel(HealthCheckService healthCheckService, IConfiguration configuration)
+    public HealthModel(IMemoryCache cache)
     {
-        _healthCheckService = healthCheckService;
-        _configuration = configuration;
+        _cache = cache;
     }
 
     public List<KeyValuePair<string, string>> SortedHealthResults { get; private set; }
 
-    public async Task OnGetAsync()
+    public void OnGet()
     {
-        var hosts = _configuration.GetSection("HealthCheckHosts").Get<string[]>();
-        var healthResults = await _healthCheckService.CheckHostsAsync(hosts);
-
-        // Sort the results: unhealthy first, then by hostname alphabetically
-        SortedHealthResults = healthResults
-            .OrderBy(result => result.Value == "Healthy")
-            .ThenBy(result => result.Key)
-            .ToList();
+        if (_cache.TryGetValue("HealthCheckResults", out Dictionary<string, string> healthResults))
+        {
+            SortedHealthResults = healthResults
+                .OrderBy(result => result.Value == "Healthy")
+                .ThenBy(result => result.Key)
+                .ToList();
+        }
+        else
+        {
+            SortedHealthResults = new List<KeyValuePair<string, string>>();
+        }
     }
 }
