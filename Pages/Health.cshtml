@@ -6,6 +6,8 @@
 
 <h2>Health Check</h2>
 
+<p>Last Checked: @Model.LastChecked.ToString("g")</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -16,7 +18,7 @@
     <tbody>
         @foreach (var result in Model.SortedHealthResults)
         {
-            <tr class="@(result.Value == "Healthy" ? "healthy" : "unhealthy")">
+            <tr class="@(result.Value == "Healthy" ? "table-success" : "table-danger")">
                 <td>@result.Key</td>
                 <td>@result.Value</td>
             </tr>
